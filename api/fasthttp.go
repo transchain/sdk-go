@@ -8,6 +8,7 @@
 package api
 
 import (
+    "net"
     "time"
 
     "github.com/valyala/fasthttp"
@@ -26,7 +27,9 @@ type FastHttpClient struct {
 func NewFastHttpClient(apiUrl string) *FastHttpClient {
     return &FastHttpClient{
         fastHttpClient: &fasthttp.Client{
-            MaxIdleConnDuration:       30 * time.Second,
+            Dial: func(addr string) (net.Conn, error) {
+                return fasthttp.DialTimeout(addr, 15*time.Second)
+            },
             MaxIdemponentCallAttempts: 1,
         },
         apiUrl:  apiUrl,
@@ -71,15 +74,17 @@ func (c FastHttpClient) doRequest(
     headers map[string]string,
     queryValues map[string]string,
 ) (*RawResponse, error) {
+
     req := fasthttp.AcquireRequest()
     resp := fasthttp.AcquireResponse()
+
+    req.SetConnectionClose()
+
     defer func() {
         if req != nil {
-            req.SetConnectionClose()
             fasthttp.ReleaseRequest(req)
         }
         if resp != nil {
-            resp.SetConnectionClose()
             fasthttp.ReleaseResponse(resp)
         }
     }()

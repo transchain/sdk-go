@@ -36,29 +36,30 @@ func NewPkgSftpClient(cfg *tcSsh.Config) (*PkgSftpClient, error) {
 // SendFile sends a file from a source path to the concatenated base path and dest path suffix.
 func (sp *PkgSftpClient) SendFile(sourcePath string, destPathSuffix string) error {
     client, err := ssh.Dial("tcp", sp.SshUrl, sp.SshClientConfig)
+    if err != nil {
+        return err
+    }
     defer func() {
         _ = client.Close()
     }()
+
+    sftpCli, err := sftp.NewClient(client)
     if err != nil {
         return err
     }
-
-    sftpCli, err := sftp.NewClient(client)
     defer func() {
         _ = sftpCli.Close()
     }()
-    if err != nil {
-        return err
-    }
+
 
     // Open the source file to copy
     in, err := os.Open(sourcePath)
-    defer func() {
-        _ = in.Close()
-    }()
     if err != nil {
         return err
     }
+    defer func() {
+        _ = in.Close()
+    }()
 
     fullDestPath := filepath.Join(sp.BasePath, destPathSuffix)
 
@@ -71,12 +72,12 @@ func (sp *PkgSftpClient) SendFile(sourcePath string, destPathSuffix string) erro
 
     // Open the destination file
     out, err := sftpCli.OpenFile(filepath.Join(fullDestPath, fileName), os.O_CREATE|os.O_WRONLY)
-    defer func() {
-        _ = out.Close()
-    }()
     if err != nil {
         return err
     }
+    defer func() {
+        _ = out.Close()
+    }()
 
     _, err = io.Copy(out, in)
     if err != nil {

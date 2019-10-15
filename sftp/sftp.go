@@ -71,7 +71,7 @@ func (sp *PkgSftpClient) SendFile(sourcePath string, destPathSuffix string) erro
     _, fileName := filepath.Split(sourcePath)
 
     // Open the destination file
-    out, err := sftpCli.OpenFile(filepath.Join(fullDestPath, fileName), os.O_CREATE|os.O_WRONLY)
+    out, err := sftpCli.Create(filepath.Join(fullDestPath, fileName))
     if err != nil {
         return err
     }

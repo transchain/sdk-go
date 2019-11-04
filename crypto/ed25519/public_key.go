@@ -11,7 +11,7 @@ import (
     "encoding/base64"
     "encoding/json"
 
-    "golang.org/x/crypto/ed25519"
+    "github.com/oasislabs/ed25519"
 )
 
 // PublicKey is an ed25519 public key wrapper (32 bytes).

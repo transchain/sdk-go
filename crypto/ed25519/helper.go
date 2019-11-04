@@ -11,7 +11,7 @@ import (
     "bytes"
     "crypto/rand"
 
-    "golang.org/x/crypto/ed25519"
+    "github.com/oasislabs/ed25519"
 )
 
 // PublicKeysAreEqual checks if two public keys are equal.

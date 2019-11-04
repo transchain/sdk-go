@@ -11,7 +11,7 @@ import (
     "encoding/base64"
     "encoding/json"
 
-    "golang.org/x/crypto/ed25519"
+    "github.com/oasislabs/ed25519"
 )
 
 // Signature is an ed25519 signature wrapper (64 bytes).

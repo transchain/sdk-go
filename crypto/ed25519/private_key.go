@@ -10,7 +10,7 @@ package ed25519
 import (
     "encoding/base64"
 
-    "golang.org/x/crypto/ed25519"
+    "github.com/oasislabs/ed25519"
 )
 
 // PrivateKey is an ed25519 private key wrapper (64 bytes).

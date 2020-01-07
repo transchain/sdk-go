@@ -14,7 +14,7 @@ import (
     "gopkg.in/go-playground/validator.v9"
 )
 
-var bcidRegexp = regexp.MustCompile("^[a-z]{6}-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
+var txidRegexp = regexp.MustCompile("^[a-z]{6}-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
 
 var instance *validator.Validate
 var once sync.Once
@@ -24,13 +24,13 @@ func Get() *validator.Validate {
     once.Do(func() {
         instance = validator.New()
         // Define the goValidate handler
-        _ = instance.RegisterValidation("bcid", bcidHandler)
+        _ = instance.RegisterValidation("txid", txidHandler)
     })
     return instance
 }
 
-// bcidHandler validates that a string field is a bcid field.
+// txidHandler validates that a string field is a txid field.
 // [6 lowercase alpha chars]-[uuidv4].
-func bcidHandler(fl validator.FieldLevel) bool {
-    return bcidRegexp.MatchString(fl.Field().String())
+func txidHandler(fl validator.FieldLevel) bool {
+    return txidRegexp.MatchString(fl.Field().String())
 }

@@ -12,49 +12,33 @@ import (
     "os"
     "os/signal"
     "syscall"
+
+    "github.com/transchain/sdk-go/log"
 )
 
 // Stopper interface defines the methods a concrete stopper must implement.
 type Stopper interface {
-    Stop()
-    IsStopped() bool
-}
-
-// DefaultStopper provides a basic stopper.
-type DefaultStopper struct {
-    stopped bool
-}
-
-// DefaultStopper constructor.
-func NewDefaultStopper() *DefaultStopper {
-    return &DefaultStopper{
-        stopped: false,
-    }
-}
-
-// Stop sets the stopper in a stopped state.
-func (c *DefaultStopper) Stop() {
-    c.stopped = true
-}
-
-// IsStopped indicates if the Stop method has already been called.
-func (c *DefaultStopper) IsStopped() bool {
-    return c.stopped
+    Stop() error
+    IsRunning() bool
 }
 
 // TrapSignal listens os signals SIGINT and SIGTERM in a goroutine.
 // If trapped once, the stopper's Stop method is called to cleanup.
 // If trapped twice, the program is interrupted.
-func TrapSignal(stopper Stopper) {
+func TrapSignal(logger log.Logger, stopper Stopper) {
     c := make(chan os.Signal, 1)
     signal.Notify(c, os.Interrupt, syscall.SIGTERM)
     go func() {
         for sig := range c {
-            if !stopper.IsStopped() {
-                fmt.Println(fmt.Sprintf("captured %s, properly exiting...", sig.String()))
-                stopper.Stop()
+            if stopper.IsRunning() {
+                logger.Info(fmt.Sprintf("captured [%s] signal, properly exiting...", sig.String()))
+                if err := stopper.Stop(); err != nil {
+                    logger.Error(fmt.Sprintf("unable to properly exit: %s", err.Error()))
+                    os.Exit(130)
+                }
+                os.Exit(0)
             } else {
-                fmt.Println(fmt.Sprintf("captured %s, exiting forced...", sig.String()))
+                logger.Info(fmt.Sprintf("captured [%s] signal, exiting forced...", sig.String()))
                 os.Exit(130)
             }
         }

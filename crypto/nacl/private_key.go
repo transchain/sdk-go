@@ -10,9 +10,15 @@ package nacl
 import (
     "crypto/rand"
     "encoding/base64"
+    "fmt"
     "io"
 
     "golang.org/x/crypto/nacl/box"
+)
+
+var (
+    ErrBadPrivateKeySize         = fmt.Errorf("bad x25519 private key size")
+    ErrBadPrivateKeyBase64Format = fmt.Errorf("bad x25519 private key base64 format")
 )
 
 const PrivateKeySize = 64
@@ -22,18 +28,21 @@ type PrivateKey [PrivateKeySize]byte
 
 // PrivateKey constructor.
 func NewPrivateKey(privateKeyBytes []byte) PrivateKey {
+    if len(privateKeyBytes) != PrivateKeySize {
+        panic(ErrBadPrivateKeySize)
+    }
     var privateKey PrivateKey
     copy(privateKey[:], privateKeyBytes[:])
     return privateKey
 }
 
 // PrivateKey constructor from a base64 string.
-func NewPrivateKeyFromBase64(privateKeyBase64 string) (PrivateKey, error) {
+func NewPrivateKeyFromBase64(privateKeyBase64 string) PrivateKey {
     privateKeyBytes, err := base64.StdEncoding.DecodeString(privateKeyBase64)
     if err != nil {
-        return PrivateKey{}, err
+        panic(ErrBadPrivateKeyBase64Format)
     }
-    return NewPrivateKey(privateKeyBytes), nil
+    return NewPrivateKey(privateKeyBytes)
 }
 
 // String returns the base64 representation.

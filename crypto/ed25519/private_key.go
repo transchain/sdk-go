@@ -9,8 +9,14 @@ package ed25519
 
 import (
     "encoding/base64"
+    "fmt"
 
     "github.com/oasislabs/ed25519"
+)
+
+var (
+    ErrBadPrivateKeySize         = fmt.Errorf("bad ed25519 private key size")
+    ErrBadPrivateKeyBase64Format = fmt.Errorf("bad ed25519 private key base64 format")
 )
 
 // PrivateKey is an ed25519 private key wrapper (64 bytes).
@@ -18,18 +24,21 @@ type PrivateKey [ed25519.PrivateKeySize]byte
 
 // PrivateKey constructor.
 func NewPrivateKey(privateKeyBytes []byte) PrivateKey {
+    if len(privateKeyBytes) != ed25519.PrivateKeySize {
+        panic(ErrBadPrivateKeySize)
+    }
     var privateKey PrivateKey
     copy(privateKey[:], privateKeyBytes[:])
     return privateKey
 }
 
 // PrivateKey constructor from a base64 string.
-func NewPrivateKeyFromBase64(privateKeyBase64 string) (PrivateKey, error) {
+func NewPrivateKeyFromBase64(privateKeyBase64 string) PrivateKey {
     privateKeyBytes, err := base64.StdEncoding.DecodeString(privateKeyBase64)
     if err != nil {
-        return PrivateKey{}, err
+        panic(ErrBadPrivateKeyBase64Format)
     }
-    return NewPrivateKey(privateKeyBytes), nil
+    return NewPrivateKey(privateKeyBytes)
 }
 
 // Sign accepts a message and returns its corresponding ed25519 signature.

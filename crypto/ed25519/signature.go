@@ -10,8 +10,13 @@ package ed25519
 import (
     "encoding/base64"
     "encoding/json"
+    "fmt"
 
     "github.com/oasislabs/ed25519"
+)
+
+var (
+    ErrBadSignatureSize = fmt.Errorf("bad ed25519 signature size")
 )
 
 // Signature is an ed25519 signature wrapper (64 bytes).
@@ -32,6 +37,9 @@ func (s *Signature) UnmarshalJSON(data []byte) error {
     var bytes []byte
     if err := json.Unmarshal(data, &bytes); err != nil {
         return err
+    }
+    if len(bytes) != ed25519.SignatureSize {
+        return ErrBadSignatureSize
     }
     copy(s[:], bytes)
     return nil

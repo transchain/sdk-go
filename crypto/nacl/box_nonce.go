@@ -10,6 +10,11 @@ package nacl
 import (
     "encoding/base64"
     "encoding/json"
+    "fmt"
+)
+
+var (
+    ErrBadNonceSize = fmt.Errorf("bad nonce size")
 )
 
 const BoxNonceSize = 24
@@ -32,6 +37,9 @@ func (bn *BoxNonce) UnmarshalJSON(data []byte) error {
     var bytes []byte
     if err := json.Unmarshal(data, &bytes); err != nil {
         return err
+    }
+    if len(bytes) != BoxNonceSize {
+        return ErrBadNonceSize
     }
     copy(bn[:], bytes)
     return nil

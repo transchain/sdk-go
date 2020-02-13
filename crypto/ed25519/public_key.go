@@ -10,8 +10,14 @@ package ed25519
 import (
     "encoding/base64"
     "encoding/json"
+    "fmt"
 
     "github.com/oasislabs/ed25519"
+)
+
+var (
+    ErrBadPublicKeySize         = fmt.Errorf("bad ed25519 public key size")
+    ErrBadPublicKeyBase64Format = fmt.Errorf("bad ed25519 public key base64 format")
 )
 
 // PublicKey is an ed25519 public key wrapper (32 bytes).
@@ -19,18 +25,21 @@ type PublicKey [ed25519.PublicKeySize]byte
 
 // PublicKey constructor.
 func NewPublicKey(publicKeyBytes []byte) PublicKey {
+    if len(publicKeyBytes) != ed25519.PublicKeySize {
+        panic(ErrBadPublicKeySize)
+    }
     var publicKey PublicKey
     copy(publicKey[:], publicKeyBytes[:])
     return publicKey
 }
 
 // PublicKey constructor from a base64 string.
-func NewPublicKeyFromBase64(publicKeyBase64 string) (PublicKey, error) {
+func NewPublicKeyFromBase64(publicKeyBase64 string) PublicKey {
     publicKeyBytes, err := base64.StdEncoding.DecodeString(publicKeyBase64)
     if err != nil {
-        return PublicKey{}, err
+        panic(ErrBadPublicKeyBase64Format)
     }
-    return NewPublicKey(publicKeyBytes), nil
+    return NewPublicKey(publicKeyBytes)
 }
 
 // Verify indicates if a message and a signature match.
@@ -54,8 +63,9 @@ func (pk *PublicKey) UnmarshalJSON(data []byte) error {
     if err := json.Unmarshal(data, &bytes); err != nil {
         return err
     }
+    if len(bytes) != ed25519.PublicKeySize {
+        return ErrBadPublicKeySize
+    }
     copy(pk[:], bytes)
     return nil
 }
-
-

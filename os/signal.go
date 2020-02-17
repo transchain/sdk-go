@@ -31,12 +31,13 @@ func TrapSignal(logger log.Logger, stopper Stopper) {
     go func() {
         for sig := range c {
             if stopper.IsRunning() {
-                logger.Info(fmt.Sprintf("captured [%s] signal, properly exiting...", sig.String()))
-                if err := stopper.Stop(); err != nil {
-                    logger.Error(fmt.Sprintf("unable to properly exit: %s", err.Error()))
-                    os.Exit(130)
-                }
-                os.Exit(0)
+                go func() {
+                    logger.Info(fmt.Sprintf("captured [%s] signal, properly exiting...", sig.String()))
+                    if err := stopper.Stop(); err != nil {
+                        logger.Error(fmt.Sprintf("unable to properly exit: %s", err.Error()))
+                        os.Exit(130)
+                    }
+                } ()
             } else {
                 logger.Info(fmt.Sprintf("captured [%s] signal, exiting forced...", sig.String()))
                 os.Exit(130)

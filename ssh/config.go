@@ -12,7 +12,6 @@ type Config struct {
     Host       string `yaml:"host"`
     Port       string `yaml:"port"`
     SshKeyPath string `yaml:"sshKeyPath"`
-    BasePath   string `yaml:"basePath"`
 }
 
 // GetSshClientConfig loads and parses a private key to return an ssh client config.

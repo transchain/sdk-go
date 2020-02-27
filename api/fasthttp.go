@@ -114,8 +114,12 @@ func (c FastHttpClient) doRequest(
         return nil, err
     }
 
+    originalBody := resp.Body()
+    copiedBody := make([]byte, len(originalBody))
+    copy(copiedBody, originalBody)
+
     return &RawResponse{
         StatusCode: resp.StatusCode(),
-        Body:       resp.Body(),
+        Body:       copiedBody,
     }, nil
 }

@@ -9,9 +9,9 @@ package log
 
 // Logger interface defines the methods a concrete logger must implement.
 type Logger interface {
-    Debug(message string, keyValues ...interface{})
-    Info(message string, keyValues ...interface{})
-    Error(message string, keyValues ...interface{})
-    Warn(message string, keyValues ...interface{})
-    With(keyValues ...interface{}) Logger
+	Debug(message string, keyValues ...interface{})
+	Info(message string, keyValues ...interface{})
+	Error(message string, keyValues ...interface{})
+	Warn(message string, keyValues ...interface{})
+	With(keyValues ...interface{}) Logger
 }

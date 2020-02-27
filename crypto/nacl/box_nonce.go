@@ -8,13 +8,13 @@
 package nacl
 
 import (
-    "encoding/base64"
-    "encoding/json"
-    "fmt"
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
 )
 
 var (
-    ErrBadNonceSize = fmt.Errorf("bad nonce size")
+	ErrBadNonceSize = fmt.Errorf("bad nonce size")
 )
 
 const BoxNonceSize = 24
@@ -24,23 +24,23 @@ type BoxNonce [BoxNonceSize]byte
 
 // String returns the base64 representation.
 func (bn BoxNonce) String() string {
-    return base64.StdEncoding.EncodeToString(bn[:])
+	return base64.StdEncoding.EncodeToString(bn[:])
 }
 
 // MarshalJSON encodes the base64 value of a box nonce.
 func (bn BoxNonce) MarshalJSON() ([]byte, error) {
-    return json.Marshal(bn[:])
+	return json.Marshal(bn[:])
 }
 
 // UnmarshalJSON accepts a base64 value to load a box nonce.
 func (bn *BoxNonce) UnmarshalJSON(data []byte) error {
-    var bytes []byte
-    if err := json.Unmarshal(data, &bytes); err != nil {
-        return err
-    }
-    if len(bytes) != BoxNonceSize {
-        return ErrBadNonceSize
-    }
-    copy(bn[:], bytes)
-    return nil
+	var bytes []byte
+	if err := json.Unmarshal(data, &bytes); err != nil {
+		return err
+	}
+	if len(bytes) != BoxNonceSize {
+		return ErrBadNonceSize
+	}
+	copy(bn[:], bytes)
+	return nil
 }

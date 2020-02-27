@@ -8,19 +8,19 @@
 package os
 
 import (
-    "os"
+	"os"
 )
 
 // PathExists indicates if a path exists.
 func PathExists(path string) bool {
-    _, err := os.Stat(path)
-    return !os.IsNotExist(err)
+	_, err := os.Stat(path)
+	return !os.IsNotExist(err)
 }
 
 // RemovePathIfExists removes a directory or a file if it exists.
 func RemovePathIfExists(path string) error {
-    if PathExists(path) {
-        return os.RemoveAll(path)
-    }
-    return nil
+	if PathExists(path) {
+		return os.RemoveAll(path)
+	}
+	return nil
 }

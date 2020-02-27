@@ -8,19 +8,19 @@
 package nacl
 
 import (
-    "crypto/rand"
+	"crypto/rand"
 
-    "golang.org/x/crypto/nacl/box"
+	"golang.org/x/crypto/nacl/box"
 )
 
 // GenerateNewPrivateKey generates a new x25519 private key.
 func GenerateNewPrivateKey() PrivateKey {
-    pubKey, privKey, err := box.GenerateKey(rand.Reader)
-    if err != nil {
-        panic(err)
-    }
-    privateKeyBytes := make([]byte, PrivateKeySize)
-    copy(privateKeyBytes, privKey[:])
-    copy(privateKeyBytes[32:], pubKey[:])
-    return NewPrivateKey(privateKeyBytes)
+	pubKey, privKey, err := box.GenerateKey(rand.Reader)
+	if err != nil {
+		panic(err)
+	}
+	privateKeyBytes := make([]byte, PrivateKeySize)
+	copy(privateKeyBytes, privKey[:])
+	copy(privateKeyBytes[32:], pubKey[:])
+	return NewPrivateKey(privateKeyBytes)
 }

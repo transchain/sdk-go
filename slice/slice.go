@@ -9,10 +9,10 @@ package slice
 
 // Contains indicates if a slice of strings contains a particular string value.
 func Contains(slice []string, elem string) bool {
-    for _, value := range slice {
-        if value == elem {
-            return true
-        }
-    }
-    return false
+	for _, value := range slice {
+		if value == elem {
+			return true
+		}
+	}
+	return false
 }

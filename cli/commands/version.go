@@ -8,27 +8,27 @@
 package commands
 
 import (
-    "fmt"
+	"fmt"
 
-    "github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 )
 
 const (
-    VersionCmdName  = "version"
-    VersionCmdShort = "Show version info"
+	VersionCmdName  = "version"
+	VersionCmdShort = "Show version info"
 )
 
 // GetVersionCmd returns a basic cobra command to show version information.
 func GetVersionCmd(version string, commit string) *cobra.Command {
-    return &cobra.Command{
-        Use:   VersionCmdName,
-        Short: VersionCmdShort,
-        Run: func(*cobra.Command, []string) {
-            if commit != "" {
-                fmt.Println(fmt.Sprintf("%s (%s)", version, commit))
-            } else {
-                fmt.Println(version)
-            }
-        },
-    }
+	return &cobra.Command{
+		Use:   VersionCmdName,
+		Short: VersionCmdShort,
+		Run: func(*cobra.Command, []string) {
+			if commit != "" {
+				fmt.Println(fmt.Sprintf("%s (%s)", version, commit))
+			} else {
+				fmt.Println(version)
+			}
+		},
+	}
 }

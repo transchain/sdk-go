@@ -8,6 +8,6 @@
 package os
 
 const (
-    DefaultDirPerm  = 0770
-    DefaultFilePerm = 0660
+	DefaultDirPerm  = 0770
+	DefaultFilePerm = 0660
 )

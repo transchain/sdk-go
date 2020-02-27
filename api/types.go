@@ -9,14 +9,14 @@ package api
 
 // Client interface defines the methods a concrete client must implement.
 type Client interface {
-    Get(route string, headers map[string]string, queryValues map[string]string) (*RawResponse, error)
-    Post(route string, body []byte, headers map[string]string, queryValues map[string]string) (*RawResponse, error)
-    AddHeader(key string, value string)
-    RemoveHeader(key string)
+	Get(route string, headers map[string]string, queryValues map[string]string) (*RawResponse, error)
+	Post(route string, body []byte, headers map[string]string, queryValues map[string]string) (*RawResponse, error)
+	AddHeader(key string, value string)
+	RemoveHeader(key string)
 }
 
 // Response is a fasthttp.Response wrapper.
 type RawResponse struct {
-    StatusCode int
-    Body       []byte
+	StatusCode int
+	Body       []byte
 }
